@@ -4,6 +4,45 @@
  */
 
 // Funciones para procesar documentos subidos por el usuario
+const fileInput = document.getElementById('fileInput');
+
+fileInput?.addEventListener('change', async function () {
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = async function () {
+    const typedarray = new Uint8Array(reader.result);
+    const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+
+    let fullText = '';
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map(item => item.str).join(' ');
+      fullText += pageText + '\\n';
+    }
+
+    console.log(\"Texto extraído:\", fullText);
+
+    // Detectar datos clave como ejemplo
+    const nombre = fullText.match(/(?:D[\\.ª]*\\s)?([A-ZÁÉÍÓÚÑ][^\\d]{3,})(?=\\sNIF)/i);
+    const nif = fullText.match(/NIF[:\\s]*([0-9A-Z]{8,})/i);
+    const expediente = fullText.match(/expediente[:\\s]*([A-Z0-9\\/-]+)/i);
+    const importe = fullText.match(/importe[:\\s]*([0-9\\.,]+\\s?€?)/i);
+
+    alert(
+      `✅ Datos detectados:\\n\\n` +
+      `👤 Nombre: ${nombre?.[1] || 'No encontrado'}\\n` +
+      `🆔 NIF: ${nif?.[1] || 'No encontrado'}\\n` +
+      `📁 Expediente: ${expediente?.[1] || 'No encontrado'}\\n` +
+      `💰 Importe: ${importe?.[1] || 'No encontrado'}`
+    );
+  };
+
+  reader.readAsArrayBuffer(file);
+});
 const DocumentProcessor = {
     // Simula la extracción de texto de diferentes tipos de documentos
     extractText: function(file) {
@@ -106,3 +145,27 @@ const DocumentProcessor = {
 
 // Exportar el módulo
 window.DocumentProcessor = DocumentProcessor;
+// Cálculo de días hábiles
+function sumarDiasHabiles(fecha, dias) {
+  let resultado = new Date(fecha);
+  let contador = 0;
+  while (contador < dias) {
+    resultado.setDate(resultado.getDate() + 1);
+    const dia = resultado.getDay();
+    if (dia !== 0 && dia !== 6) contador++; // Lunes a viernes
+  }
+  return resultado;
+}
+
+// Evento calcular plazo
+document.getElementById('calcularPlazo')?.addEventListener('click', () => {
+  const fechaStr = document.getElementById('fechaRecepcion').value;
+  if (!fechaStr) return alert(\"Introduce la fecha de recepción por favor.\");
+
+  const fechaRecepcion = new Date(fechaStr);
+  const plazo = sumarDiasHabiles(fechaRecepcion, 10);
+  const opciones = { year: 'numeric', month: '2-digit', day: '2-digit' };
+
+  document.getElementById('plazoResultado').textContent =
+    `📅 Plazo para responder: ${plazo.toLocaleDateString('es-ES', opciones)}`;
+});
