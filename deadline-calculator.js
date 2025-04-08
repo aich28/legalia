@@ -279,5 +279,9 @@ class DeadlineCalculator {
     }
 }
 
-// Exportar la clase para uso en otros módulos
+// Verificar si ya existe una instancia global
+if (typeof window.DeadlineCalculator === 'undefined') {
+    window.DeadlineCalculator = DeadlineCalculator;
+}
 export default DeadlineCalculator;
+
