@@ -1,5 +1,5 @@
 class DocumentGenerator {
-  constructor()  {
+  constructor() {
     this.templates = this.loadTemplates();
   }
   
@@ -9,7 +9,7 @@ class DocumentGenerator {
       recurso_reposicion: {
         name: 'Recurso de Reposición',
         sections: {
-          header: 'AL [ÓRGANO_ADMINISTRATIVO]\n\n',
+          header: 'AL [ORGANO_ADMINISTRATIVO]\n\n',
           intro: 'D./Dña. [NOMBRE], con NIF [NIF], y domicilio a efectos de notificaciones en [DOMICILIO], comparece y como mejor proceda en Derecho, EXPONE:\n\n',
           body: 'PRIMERO.- Que con fecha [FECHA_NOTIFICACION] me ha sido notificado/a [ACTO_IMPUGNADO], con número de referencia [REFERENCIA].\n\nSEGUNDO.- Que no estando conforme con dicho acto administrativo, mediante el presente escrito interpongo RECURSO DE REPOSICIÓN, en base a los siguientes\n\nHECHOS\n\nPRIMERO.- [HECHOS_ESPECIFICOS]\n\nFUNDAMENTOS DE DERECHO\n\nI. COMPETENCIA Y PROCEDIMIENTO\n[FUNDAMENTO_COMPETENCIA]\n\nII. MOTIVOS DE IMPUGNACIÓN\n[MOTIVOS_IMPUGNACION]\n\nIII. JURISPRUDENCIA APLICABLE\n[JURISPRUDENCIA]\n\n',
           closing: 'Por lo expuesto,\n\nSOLICITO: Que tenga por presentado este escrito, junto con los documentos que se acompañan, se sirva admitirlo, y en su virtud, acuerde [PETICION_CONCRETA].\n\nEn [LOCALIDAD], a [FECHA_ACTUAL].\n\nFdo.: [NOMBRE]'
@@ -23,8 +23,16 @@ class DocumentGenerator {
           body: 'PRIMERO.- Que he recibido notificación de [TIPO_DEUDA] por importe de [IMPORTE] euros, con número de referencia [REFERENCIA], cuyo plazo de ingreso en período voluntario vence el [FECHA_VENCIMIENTO].\n\nSEGUNDO.- Que debido a dificultades económico-financieras de carácter transitorio, me resulta imposible hacer frente al pago de dicha deuda en el plazo establecido.\n\nTERCERO.- [EXPLICACION_SITUACION_ECONOMICA]\n\nFUNDAMENTOS DE DERECHO\n\nI. [FUNDAMENTOS_APLAZAMIENTO]\n\n',
           closing: 'Por lo expuesto,\n\nSOLICITO: Que tenga por presentada esta solicitud y, en su virtud, acuerde concederme un [APLAZAMIENTO/FRACCIONAMIENTO] del pago de la deuda por un periodo de [NUMERO] [MESES/AÑOS], con vencimientos [PERIODICIDAD] de [IMPORTE_FRACCION] euros.\n\nEn [LOCALIDAD], a [FECHA_ACTUAL].\n\nFdo.: [NOMBRE]'
         }
+      },
+      reclamacion_economico_administrativa: {
+        name: 'Reclamación Económico-Administrativa',
+        sections: {
+          header: 'AL TRIBUNAL ECONÓMICO-ADMINISTRATIVO [REGIONAL/CENTRAL]\n\n',
+          intro: 'D./Dña. [NOMBRE], con NIF [NIF], y domicilio a efectos de notificaciones en [DOMICILIO], comparece y como mejor proceda en Derecho, EXPONE:\n\n',
+          body: 'PRIMERO.- Que con fecha [FECHA_NOTIFICACION] me ha sido notificado/a [ACTO_IMPUGNADO], con número de referencia [REFERENCIA], dictado por [ORGANO_EMISOR].\n\nSEGUNDO.- Que no estando conforme con dicho acto administrativo, mediante el presente escrito interpongo RECLAMACIÓN ECONÓMICO-ADMINISTRATIVA, en base a los siguientes\n\nHECHOS\n\nPRIMERO.- [HECHOS_ESPECIFICOS]\n\nFUNDAMENTOS DE DERECHO\n\nI. COMPETENCIA Y PROCEDIMIENTO\n[FUNDAMENTO_COMPETENCIA]\n\nII. MOTIVOS DE IMPUGNACIÓN\n[MOTIVOS_IMPUGNACION]\n\nIII. JURISPRUDENCIA APLICABLE\n[JURISPRUDENCIA]\n\n',
+          closing: 'Por lo expuesto,\n\nSOLICITO: Que tenga por presentado este escrito, junto con los documentos que se acompañan, se sirva admitirlo, y en su virtud, acuerde [PETICION_CONCRETA].\n\nEn [LOCALIDAD], a [FECHA_ACTUAL].\n\nFdo.: [NOMBRE]'
+        }
       }
-      // Más plantillas...
     };
   }
   

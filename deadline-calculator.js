@@ -1,135 +1,176 @@
-/**
- * LegalDefense AI - Asistente Legal Inteligente
- * Módulo de cálculo de plazos legales
- */
-
-// Funciones para calcular plazos legales
-const DeadlineCalculator = {
-    // Calcula el plazo para pagar en periodo voluntario
-    calculateVoluntaryPaymentDeadline: function(notificationDate) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                // En una implementación real, se calcularía correctamente teniendo en cuenta
-                // días hábiles, festivos, etc.
-                
-                // Simulamos un cálculo de 15 días hábiles
-                const deadline = this._addBusinessDays(new Date(this._parseSpanishDate(notificationDate)), 15);
-                
-                resolve(this._formatSpanishDate(deadline));
-            }, 500);
-        });
-    },
-    
-    // Calcula el plazo para presentar recurso de reposición
-    calculateAppealDeadline: function(notificationDate) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                // Simulamos un cálculo de 15 días hábiles (mismo que el voluntario en este caso)
-                const deadline = this._addBusinessDays(new Date(this._parseSpanishDate(notificationDate)), 15);
-                
-                resolve(this._formatSpanishDate(deadline));
-            }, 500);
-        });
-    },
-    
-    // Calcula el plazo para presentar reclamación económico-administrativa
-    calculateEconomicAdministrativeClaimDeadline: function(notificationDate) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                // Simulamos un cálculo de 30 días hábiles
-                const deadline = this._addBusinessDays(new Date(this._parseSpanishDate(notificationDate)), 30);
-                
-                resolve(this._formatSpanishDate(deadline));
-            }, 500);
-        });
-    },
-    
-    // Calcula el plazo para solicitar aplazamiento/fraccionamiento
-    calculateDeferralDeadline: function(notificationDate) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                // En periodo voluntario, hasta el fin del plazo de pago
-                const deadline = this._addBusinessDays(new Date(this._parseSpanishDate(notificationDate)), 15);
-                
-                resolve(this._formatSpanishDate(deadline));
-            }, 500);
-        });
-    },
-    
-    // Calcula todos los plazos relevantes
-    calculateAllDeadlines: function(notificationDate) {
-        return new Promise((resolve) => {
-            Promise.all([
-                this.calculateVoluntaryPaymentDeadline(notificationDate),
-                this.calculateAppealDeadline(notificationDate),
-                this.calculateEconomicAdministrativeClaimDeadline(notificationDate),
-                this.calculateDeferralDeadline(notificationDate)
-            ]).then(([voluntaryPayment, appeal, economicClaim, deferral]) => {
-                resolve({
-                    voluntario: voluntaryPayment,
-                    recurso: appeal,
-                    reclamacionEconomica: economicClaim,
-                    aplazamiento: deferral
-                });
-            });
-        });
-    },
-    
-    // Verifica si un plazo ha vencido
-    hasDeadlineExpired: function(deadline) {
-        const deadlineDate = new Date(this._parseSpanishDate(deadline));
-        const today = new Date();
-        
-        return today > deadlineDate;
-    },
-    
-    // Calcula los días restantes hasta un plazo
-    calculateRemainingDays: function(deadline) {
-        const deadlineDate = new Date(this._parseSpanishDate(deadline));
-        const today = new Date();
-        
-        // Diferencia en milisegundos
-        const diffTime = deadlineDate - today;
-        
-        // Convertir a días
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
-        return Math.max(0, diffDays);
-    },
-    
-    // Método auxiliar para añadir días hábiles a una fecha
-    _addBusinessDays: function(date, days) {
-        let result = new Date(date);
-        let addedDays = 0;
-        
-        while (addedDays < days) {
-            result.setDate(result.getDate() + 1);
-            
-            // Comprobar si es día hábil (no sábado ni domingo)
-            if (result.getDay() !== 0 && result.getDay() !== 6) {
-                addedDays++;
-            }
-        }
-        
-        return result;
-    },
-    
-    // Método auxiliar para convertir fecha española (DD/MM/YYYY) a objeto Date
-    _parseSpanishDate: function(dateString) {
-        const parts = dateString.split('/');
-        // Nota: los meses en JavaScript van de 0 a 11
-        return new Date(parts[2], parts[1] - 1, parts[0]);
-    },
-    
-    // Método auxiliar para formatear fecha en formato español
-    _formatSpanishDate: function(date) {
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        
-        return `${day}/${month}/${year}`;
+class DeadlineCalculator {
+  constructor() {
+    this.holidays = this.loadHolidays();
+  }
+  
+  // Cargar festivos nacionales
+  loadHolidays() {
+    // En una implementación real, estos datos vendrían de una API o base de datos
+    return [
+      '2025-01-01', // Año Nuevo
+      '2025-01-06', // Reyes
+      '2025-04-18', // Viernes Santo
+      '2025-05-01', // Día del Trabajo
+      '2025-08-15', // Asunción
+      '2025-10-12', // Fiesta Nacional
+      '2025-11-01', // Todos los Santos
+      '2025-12-06', // Constitución
+      '2025-12-08', // Inmaculada
+      '2025-12-25'  // Navidad
+    ];
+  }
+  
+  calculateDeadlines(notificationDate, procedureType) {
+    if (!notificationDate) {
+      return {
+        message: 'Se necesita la fecha de notificación para calcular plazos'
+      };
     }
-};
-
-// Exportar el módulo
-window.DeadlineCalculator = DeadlineCalculator;
+    
+    // Convertir a objeto Date si es string
+    const notifDate = typeof notificationDate === 'string' 
+      ? new Date(notificationDate) 
+      : notificationDate;
+    
+    // Calcular plazos según tipo de procedimiento
+    switch(procedureType) {
+      case 'sancion_iva':
+      case 'sancion_irpf':
+      case 'sancion_generica':
+        return {
+          voluntaryPayment: this.addBusinessDays(notifDate, 30),
+          reposicionDeadline: this.addBusinessDays(notifDate, 15),
+          economicAdminDeadline: this.addMonths(notifDate, 1)
+        };
+      
+      case 'liquidacion_iva':
+      case 'liquidacion_irpf':
+      case 'liquidacion_generica':
+        return {
+          voluntaryPayment: this.addBusinessDays(notifDate, 30),
+          reposicionDeadline: this.addBusinessDays(notifDate, 15),
+          economicAdminDeadline: this.addMonths(notifDate, 1)
+        };
+      
+      case 'requerimiento_informacion':
+      case 'requerimiento_generico':
+        return {
+          responseDeadline: this.addBusinessDays(notifDate, 10)
+        };
+      
+      case 'acta_inspeccion':
+        return {
+          alegacionesDeadline: this.addBusinessDays(notifDate, 15)
+        };
+      
+      default:
+        return {
+          genericDeadline: this.addBusinessDays(notifDate, 10),
+          message: 'Plazos genéricos, consultar documento específico'
+        };
+    }
+  }
+  
+  // Verificar si es día hábil
+  isBusinessDay(date) {
+    const day = date.getDay();
+    const isWeekend = day === 0 || day === 6; // 0 = Domingo, 6 = Sábado
+    
+    if (isWeekend) return false;
+    
+    // Comprobar si es festivo
+    const dateString = date.toISOString().split('T')[0];
+    return !this.holidays.includes(dateString);
+  }
+  
+  // Añadir días hábiles a una fecha
+  addBusinessDays(date, days) {
+    let currentDate = new Date(date);
+    let remainingDays = days;
+    
+    while (remainingDays > 0) {
+      currentDate.setDate(currentDate.getDate() + 1);
+      
+      // Agosto es inhábil para plazos administrativos
+      if (currentDate.getMonth() === 7) continue;
+      
+      if (this.isBusinessDay(currentDate)) {
+        remainingDays--;
+      }
+    }
+    
+    return currentDate;
+  }
+  
+  // Añadir meses a una fecha
+  addMonths(date, months) {
+    const result = new Date(date);
+    result.setMonth(result.getMonth() + months);
+    return result;
+  }
+  
+  // Formatear fecha para mostrar
+  formatDate(date) {
+    return date.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    });
+  }
+  
+  // Calcular días restantes desde hoy
+  calculateRemainingDays(deadline) {
+    const today = new Date();
+    const diffTime = deadline.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  }
+  
+  // Generar mensaje de alerta según proximidad del plazo
+  getDeadlineAlert(deadline) {
+    const remainingDays = this.calculateRemainingDays(deadline);
+    
+    if (remainingDays < 0) {
+      return {
+        message: 'Plazo vencido',
+        severity: 'critical',
+        remainingDays
+      };
+    } else if (remainingDays <= 3) {
+      return {
+        message: 'Plazo muy próximo a vencer',
+        severity: 'high',
+        remainingDays
+      };
+    } else if (remainingDays <= 7) {
+      return {
+        message: 'Plazo próximo a vencer',
+        severity: 'medium',
+        remainingDays
+      };
+    } else {
+      return {
+        message: 'Plazo en curso',
+        severity: 'low',
+        remainingDays
+      };
+    }
+  }
+  
+  // Obtener información completa de plazos con alertas
+  getDeadlinesInfo(deadlines) {
+    const result = {};
+    
+    for (const key in deadlines) {
+      if (deadlines[key] instanceof Date) {
+        result[key] = {
+          date: deadlines[key],
+          formatted: this.formatDate(deadlines[key]),
+          alert: this.getDeadlineAlert(deadlines[key])
+        };
+      }
+    }
+    
+    return result;
+  }
+}
