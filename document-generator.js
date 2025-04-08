@@ -1,201 +1,205 @@
-/**
- * LegalDefense AI - Asistente Legal Inteligente
- * Módulo de generación de documentos
- */
-
-// Funciones para generar documentos legales personalizados
-const DocumentGenerator = {
-    // Genera un documento de alegaciones
-    generateAllegationsDocument: function(documentData, errors, strategy) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                // En una implementación real, se utilizaría una plantilla más compleja
-                // y se personalizaría con los datos específicos del caso
-                
-                const documentContent = `
-                    <div class="text-right mb-4">
-                        <p class="text-gray-800">${documentData.organoEmisor.toUpperCase()}</p>
-                        <p class="text-gray-800">AGENCIA TRIBUTARIA</p>
-                        <p class="text-gray-800">C/ Guzmán el Bueno, 139</p>
-                        <p class="text-gray-800">28003 Madrid</p>
-                    </div>
-                    <div class="text-center mb-6">
-                        <p class="text-gray-800 font-bold">ESCRITO DE ALEGACIONES</p>
-                    </div>
-                    <p class="text-gray-800 mb-4">D/Dña ${documentData.nombre}, con NIF ${documentData.nif}, y domicilio a efectos de notificaciones en [DIRECCIÓN], comparece y como mejor proceda en Derecho, EXPONE:</p>
-                    <p class="text-gray-800 mb-4">PRIMERO.- Que con fecha ${documentData.fechaNotificacion} me ha sido notificada Propuesta de Liquidación con número de referencia ${documentData.expediente}, correspondiente al Impuesto sobre la Renta de las Personas Físicas, ejercicio 2021.</p>
-                    <p class="text-gray-800 mb-4">SEGUNDO.- Que dentro del plazo legalmente establecido, formulo las siguientes ALEGACIONES:</p>
-                    ${this._generateErrorParagraphs(errors)}
-                    <p class="text-gray-800 mb-4">Por lo expuesto,</p>
-                    <p class="text-gray-800 mb-4">SOLICITO: Que tenga por presentado este escrito, junto con los documentos que se acompañan, se sirva admitirlo, y en su virtud, acuerde anular la propuesta de liquidación de referencia por los defectos formales y errores de cálculo detallados.</p>
-                    <div class="mt-8">
-                        <p class="text-gray-800">En _______________, a ____ de abril de 2023.</p>
-                        <p class="text-gray-800 mt-6">Fdo.: ${documentData.nombre}</p>
-                    </div>
-                `;
-                
-                resolve(documentContent);
-            }, 1200);
-        });
-    },
-    
-    // Genera un documento de recurso de reposición
-    generateAppealDocument: function(documentData, errors, strategy) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const documentContent = `
-                    <div class="text-right mb-4">
-                        <p class="text-gray-800">${documentData.organoEmisor.toUpperCase()}</p>
-                        <p class="text-gray-800">AGENCIA TRIBUTARIA</p>
-                        <p class="text-gray-800">C/ Guzmán el Bueno, 139</p>
-                        <p class="text-gray-800">28003 Madrid</p>
-                    </div>
-                    <div class="text-center mb-6">
-                        <p class="text-gray-800 font-bold">RECURSO DE REPOSICIÓN</p>
-                    </div>
-                    <p class="text-gray-800 mb-4">D/Dña ${documentData.nombre}, con NIF ${documentData.nif}, y domicilio a efectos de notificaciones en [DIRECCIÓN], comparece y como mejor proceda en Derecho, EXPONE:</p>
-                    <p class="text-gray-800 mb-4">PRIMERO.- Que con fecha ${documentData.fechaNotificacion} me ha sido notificada Liquidación con número de referencia ${documentData.expediente}, correspondiente al Impuesto sobre la Renta de las Personas Físicas, ejercicio 2021.</p>
-                    <p class="text-gray-800 mb-4">SEGUNDO.- Que no estando conforme con dicha liquidación, dentro del plazo legalmente establecido, interpongo RECURSO DE REPOSICIÓN en base a los siguientes MOTIVOS:</p>
-                    ${this._generateErrorParagraphs(errors)}
-                    <p class="text-gray-800 mb-4">Por lo expuesto,</p>
-                    <p class="text-gray-800 mb-4">SOLICITO: Que tenga por presentado este recurso de reposición contra la liquidación de referencia, se sirva admitirlo, y en su virtud, acuerde anular la liquidación recurrida por los motivos expuestos.</p>
-                    <div class="mt-8">
-                        <p class="text-gray-800">En _______________, a ____ de abril de 2023.</p>
-                        <p class="text-gray-800 mt-6">Fdo.: ${documentData.nombre}</p>
-                    </div>
-                `;
-                
-                resolve(documentContent);
-            }, 1200);
-        });
-    },
-    
-    // Genera un documento de solicitud de aplazamiento/fraccionamiento
-    generatePaymentDeferralDocument: function(documentData) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const documentContent = `
-                    <div class="text-right mb-4">
-                        <p class="text-gray-800">${documentData.organoEmisor.toUpperCase()}</p>
-                        <p class="text-gray-800">AGENCIA TRIBUTARIA</p>
-                        <p class="text-gray-800">C/ Guzmán el Bueno, 139</p>
-                        <p class="text-gray-800">28003 Madrid</p>
-                    </div>
-                    <div class="text-center mb-6">
-                        <p class="text-gray-800 font-bold">SOLICITUD DE APLAZAMIENTO/FRACCIONAMIENTO</p>
-                    </div>
-                    <p class="text-gray-800 mb-4">D/Dña ${documentData.nombre}, con NIF ${documentData.nif}, y domicilio a efectos de notificaciones en [DIRECCIÓN], comparece y como mejor proceda en Derecho, EXPONE:</p>
-                    <p class="text-gray-800 mb-4">PRIMERO.- Que con fecha ${documentData.fechaNotificacion} me ha sido notificada Liquidación con número de referencia ${documentData.expediente}, por importe de ${documentData.importe}, correspondiente al Impuesto sobre la Renta de las Personas Físicas, ejercicio 2021.</p>
-                    <p class="text-gray-800 mb-4">SEGUNDO.- Que debido a dificultades económico-financieras de carácter transitorio, me resulta imposible hacer frente al pago de dicha deuda en el plazo establecido.</p>
-                    <p class="text-gray-800 mb-4">Por lo expuesto,</p>
-                    <p class="text-gray-800 mb-4">SOLICITO: Que tenga por presentada esta solicitud y, en su virtud, acuerde concederme un aplazamiento/fraccionamiento del pago de la deuda por un periodo de [NÚMERO] meses, con vencimientos mensuales de [IMPORTE] euros.</p>
-                    <div class="mt-8">
-                        <p class="text-gray-800">En _______________, a ____ de abril de 2023.</p>
-                        <p class="text-gray-800 mt-6">Fdo.: ${documentData.nombre}</p>
-                    </div>
-                `;
-                
-                resolve(documentContent);
-            }, 1200);
-        });
-    },
-    
-    // Genera un documento de reclamación económico-administrativa
-    generateEconomicAdministrativeClaimDocument: function(documentData, errors, strategy) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const documentContent = `
-                    <div class="text-right mb-4">
-                        <p class="text-gray-800">TRIBUNAL ECONÓMICO-ADMINISTRATIVO REGIONAL DE MADRID</p>
-                        <p class="text-gray-800">C/ Orense, 25</p>
-                        <p class="text-gray-800">28020 Madrid</p>
-                    </div>
-                    <div class="text-center mb-6">
-                        <p class="text-gray-800 font-bold">RECLAMACIÓN ECONÓMICO-ADMINISTRATIVA</p>
-                    </div>
-                    <p class="text-gray-800 mb-4">D/Dña ${documentData.nombre}, con NIF ${documentData.nif}, y domicilio a efectos de notificaciones en [DIRECCIÓN], comparece y como mejor proceda en Derecho, EXPONE:</p>
-                    <p class="text-gray-800 mb-4">PRIMERO.- Que con fecha ${documentData.fechaNotificacion} me ha sido notificada Resolución del recurso de reposición interpuesto contra la liquidación con número de referencia ${documentData.expediente}, correspondiente al Impuesto sobre la Renta de las Personas Físicas, ejercicio 2021.</p>
-                    <p class="text-gray-800 mb-4">SEGUNDO.- Que no estando conforme con dicha resolución, dentro del plazo legalmente establecido, interpongo RECLAMACIÓN ECONÓMICO-ADMINISTRATIVA en base a los siguientes MOTIVOS:</p>
-                    ${this._generateErrorParagraphs(errors)}
-                    <p class="text-gray-800 mb-4">Por lo expuesto,</p>
-                    <p class="text-gray-800 mb-4">SOLICITO: Que tenga por presentada esta reclamación económico-administrativa contra la resolución de referencia, se sirva admitirla, y en su virtud, acuerde anular la liquidación recurrida por los motivos expuestos.</p>
-                    <div class="mt-8">
-                        <p class="text-gray-800">En _______________, a ____ de abril de 2023.</p>
-                        <p class="text-gray-800 mt-6">Fdo.: ${documentData.nombre}</p>
-                    </div>
-                `;
-                
-                resolve(documentContent);
-            }, 1200);
-        });
-    },
-    
-    // Método auxiliar para generar párrafos de errores
-    _generateErrorParagraphs: function(errors) {
-        let paragraphs = '';
-        
-        errors.forEach((error, index) => {
-            paragraphs += `
-                <p class="text-gray-800 mb-2 font-bold">${this._getRomanNumeral(index + 1)}. ${this._getErrorTitle(error.type)}</p>
-                <p class="text-gray-800 mb-4">${error.description}, contraviniendo lo dispuesto en el ${error.legalReference}.</p>
-            `;
-        });
-        
-        return paragraphs;
-    },
-    
-    // Método auxiliar para obtener numerales romanos
-    _getRomanNumeral: function(num) {
-        const romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
-        return romanNumerals[num - 1] || num.toString();
-    },
-    
-    // Método auxiliar para obtener títulos de errores
-    _getErrorTitle: function(errorType) {
-        switch (errorType) {
-            case 'procedimental':
-                return 'Defecto formal en el procedimiento';
-            case 'cálculo':
-                return 'Error en el cálculo de intereses de demora';
-            case 'formal':
-                return 'Deficiencia formal en la notificación';
-            default:
-                return 'Error en el documento';
+class DocumentGenerator {
+  constructor()  {
+    this.templates = this.loadTemplates();
+  }
+  
+  // Cargar plantillas de documentos
+  loadTemplates() {
+    return {
+      recurso_reposicion: {
+        name: 'Recurso de Reposición',
+        sections: {
+          header: 'AL [ÓRGANO_ADMINISTRATIVO]\n\n',
+          intro: 'D./Dña. [NOMBRE], con NIF [NIF], y domicilio a efectos de notificaciones en [DOMICILIO], comparece y como mejor proceda en Derecho, EXPONE:\n\n',
+          body: 'PRIMERO.- Que con fecha [FECHA_NOTIFICACION] me ha sido notificado/a [ACTO_IMPUGNADO], con número de referencia [REFERENCIA].\n\nSEGUNDO.- Que no estando conforme con dicho acto administrativo, mediante el presente escrito interpongo RECURSO DE REPOSICIÓN, en base a los siguientes\n\nHECHOS\n\nPRIMERO.- [HECHOS_ESPECIFICOS]\n\nFUNDAMENTOS DE DERECHO\n\nI. COMPETENCIA Y PROCEDIMIENTO\n[FUNDAMENTO_COMPETENCIA]\n\nII. MOTIVOS DE IMPUGNACIÓN\n[MOTIVOS_IMPUGNACION]\n\nIII. JURISPRUDENCIA APLICABLE\n[JURISPRUDENCIA]\n\n',
+          closing: 'Por lo expuesto,\n\nSOLICITO: Que tenga por presentado este escrito, junto con los documentos que se acompañan, se sirva admitirlo, y en su virtud, acuerde [PETICION_CONCRETA].\n\nEn [LOCALIDAD], a [FECHA_ACTUAL].\n\nFdo.: [NOMBRE]'
         }
-    },
-    
-    // Exporta el documento a formato Word (simulado)
-    exportToWord: function(documentContent) {
-        return new Promise((resolve) => {
-            // En una implementación real, se utilizaría una biblioteca como docx.js
-            // para generar un documento Word real
-            setTimeout(() => {
-                // Simulamos la generación del documento
-                resolve({
-                    success: true,
-                    message: 'Documento generado correctamente',
-                    fileName: 'Alegaciones_' + new Date().toISOString().slice(0, 10) + '.docx'
-                });
-            }, 1000);
-        });
-    },
-    
-    // Exporta el documento a formato PDF (simulado)
-    exportToPDF: function(documentContent) {
-        return new Promise((resolve) => {
-            // En una implementación real, se utilizaría una biblioteca como jsPDF
-            // para generar un documento PDF real
-            setTimeout(() => {
-                // Simulamos la generación del documento
-                resolve({
-                    success: true,
-                    message: 'Documento generado correctamente',
-                    fileName: 'Alegaciones_' + new Date().toISOString().slice(0, 10) + '.pdf'
-                });
-            }, 1000);
-        });
+      },
+      aplazamiento: {
+        name: 'Solicitud de Aplazamiento',
+        sections: {
+          header: 'A LA DEPENDENCIA DE RECAUDACIÓN DE LA AEAT DE [LOCALIDAD]\n\n',
+          intro: 'D./Dña. [NOMBRE], con NIF [NIF], y domicilio a efectos de notificaciones en [DOMICILIO], comparece y como mejor proceda en Derecho, EXPONE:\n\n',
+          body: 'PRIMERO.- Que he recibido notificación de [TIPO_DEUDA] por importe de [IMPORTE] euros, con número de referencia [REFERENCIA], cuyo plazo de ingreso en período voluntario vence el [FECHA_VENCIMIENTO].\n\nSEGUNDO.- Que debido a dificultades económico-financieras de carácter transitorio, me resulta imposible hacer frente al pago de dicha deuda en el plazo establecido.\n\nTERCERO.- [EXPLICACION_SITUACION_ECONOMICA]\n\nFUNDAMENTOS DE DERECHO\n\nI. [FUNDAMENTOS_APLAZAMIENTO]\n\n',
+          closing: 'Por lo expuesto,\n\nSOLICITO: Que tenga por presentada esta solicitud y, en su virtud, acuerde concederme un [APLAZAMIENTO/FRACCIONAMIENTO] del pago de la deuda por un periodo de [NUMERO] [MESES/AÑOS], con vencimientos [PERIODICIDAD] de [IMPORTE_FRACCION] euros.\n\nEn [LOCALIDAD], a [FECHA_ACTUAL].\n\nFdo.: [NOMBRE]'
+        }
+      }
+      // Más plantillas...
+    };
+  }
+  
+  async generateDocument(documentType, caseData, legalAnalysis) {
+    try {
+      // Seleccionar plantilla
+      const template = this.templates[documentType];
+      if (!template) {
+        throw new Error(`Tipo de documento no soportado: ${documentType}`);
+      }
+      
+      // Preparar datos para la plantilla
+      const documentData = this.prepareDocumentData(caseData, legalAnalysis);
+      
+      // Generar contenido personalizado
+      const content = this.generateContent(template, documentData);
+      
+      // Generar documento según formato solicitado
+      const format = documentData.preferredFormat || 'docx';
+      
+      if (format === 'docx') {
+        return await this.generateDocx(template.name, content);
+      } else if (format === 'txt') {
+        return this.generateTxt(content);
+      } else {
+        throw new Error(`Formato no soportado: ${format}`);
+      }
+    } catch (error) {
+      console.error('Error generando documento:', error);
+      throw new Error('No se pudo generar el documento');
     }
-};
-
-// Exportar el módulo
-window.DocumentGenerator = DocumentGenerator;
+  }
+  
+  // Preparar datos para la plantilla
+  prepareDocumentData(caseData, legalAnalysis) {
+    // Obtener fecha actual formateada
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    });
+    
+    // Preparar datos combinando información del caso y análisis legal
+    return {
+      nombre: caseData.data.contribuyente || '[NOMBRE]',
+      nif: caseData.data.nif || '[NIF]',
+      domicilio: '[DOMICILIO]', // Solicitar al usuario
+      fechaNotificacion: caseData.data.fechaNotificacion 
+        ? new Date(caseData.data.fechaNotificacion).toLocaleDateString('es-ES')
+        : '[FECHA_NOTIFICACION]',
+      actoImpugnado: caseData.documentType === 'sancion' 
+        ? 'la sanción tributaria' 
+        : 'el acto administrativo',
+      referencia: caseData.data.expediente || '[REFERENCIA]',
+      importe: caseData.data.importe || '[IMPORTE]',
+      organoAdministrativo: caseData.data.organoEmisor || 'DELEGACIÓN DE LA AEAT',
+      localidad: '[LOCALIDAD]', // Solicitar al usuario
+      fechaActual: formattedDate,
+      motivosImpugnacion: this.generateImpugnacionText(legalAnalysis.errors),
+      fundamentosLegales: this.generateLegalBasisText(legalAnalysis.errors),
+      peticionConcreta: documentType === 'recurso_reposicion' 
+        ? 'anular la sanción impuesta' 
+        : 'conceder el aplazamiento solicitado',
+      preferredFormat: 'docx'
+    };
+  }
+  
+  // Generar texto de motivos de impugnación basado en errores detectados
+  generateImpugnacionText(errors) {
+    if (!errors || errors.length === 0) {
+      return '[DETALLAR MOTIVOS DE IMPUGNACIÓN]';
+    }
+    
+    let text = '';
+    errors.forEach((error, index) => {
+      text += `${index + 1}. ${error.description}.\n`;
+    });
+    
+    return text;
+  }
+  
+  // Generar texto de fundamentos legales basado en errores detectados
+  generateLegalBasisText(errors) {
+    if (!errors || errors.length === 0) {
+      return '[DETALLAR FUNDAMENTOS LEGALES]';
+    }
+    
+    let text = '';
+    const uniqueBases = [...new Set(errors.map(e => e.legalBasis))];
+    
+    uniqueBases.forEach((basis, index) => {
+      text += `${index + 1}. ${basis}.\n`;
+    });
+    
+    return text;
+  }
+  
+  // Generar contenido completo del documento
+  generateContent(template, data) {
+    let content = '';
+    
+    // Combinar secciones de la plantilla
+    for (const section in template.sections) {
+      let sectionText = template.sections[section];
+      
+      // Reemplazar variables con datos reales
+      for (const key in data) {
+        const placeholder = `[${key.toUpperCase()}]`;
+        sectionText = sectionText.replace(new RegExp(placeholder, 'g'), data[key]);
+      }
+      
+      content += sectionText;
+    }
+    
+    return content;
+  }
+  
+  // Generar documento Word
+  async generateDocx(title, content) {
+    // Usar docx.js para generar documento Word
+    const doc = new docx.Document({
+      sections: [{
+        properties: {},
+        children: this.parseContentToDocxElements(content)
+      }]
+    });
+    
+    // Generar archivo
+    const buffer = await docx.Packer.toBlob(doc);
+    return {
+      fileName: `${title.replace(/\s+/g, '_')}.docx`,
+      blob: buffer,
+      content: content // Para previsualización
+    };
+  }
+  
+  // Convertir texto a elementos docx
+  parseContentToDocxElements(content) {
+    // Dividir por líneas
+    const lines = content.split('\n');
+    const elements = [];
+    
+    lines.forEach(line => {
+      if (line.trim() === '') {
+        // Línea vacía
+        elements.push(new docx.Paragraph({}));
+      } else if (line.toUpperCase() === line && line.trim().length > 0) {
+        // Título (texto en mayúsculas)
+        elements.push(
+          new docx.Paragraph({
+            text: line,
+            heading: docx.HeadingLevel.HEADING_2,
+            bold: true
+          })
+        );
+      } else {
+        // Texto normal
+        elements.push(
+          new docx.Paragraph({
+            text: line
+          })
+        );
+      }
+    });
+    
+    return elements;
+  }
+  
+  // Generar documento de texto plano
+  generateTxt(content) {
+    return {
+      fileName: 'documento.txt',
+      content: content,
+      text: content
+    };
+  }
+}
